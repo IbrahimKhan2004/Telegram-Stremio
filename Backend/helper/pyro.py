@@ -155,6 +155,7 @@ commands = [
     BotCommand("set", "🎬 Manually add IMDb metadata"),
     BotCommand("log", "📄 Send the log file"),
     BotCommand("restart", "♻️ Restart the bot"),
+    BotCommand("clear_all_data", "🗑️ Delete all data"),
 ]
 
 
@@ -169,4 +170,3 @@ async def setup_bot_commands(bot: Client):
         LOGGER.info("Bot commands updated successfully.")
     except Exception as e:
         LOGGER.error(f"Error setting up bot commands: {e}")
-
