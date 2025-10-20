@@ -860,7 +860,7 @@ class Database:
         for i in range(1, total_storage_dbs + 1):
             db_key = f"storage_{i}"
             db = self.dbs.get(db_key)
-            if not db:
+            if db is None:
                 continue
 
             # Process movies
@@ -889,7 +889,7 @@ class Database:
         for i in range(1, total_storage_dbs + 1):
             db_key = f"storage_{i}"
             db = self.dbs.get(db_key)
-            if not db:
+            if db is None:
                 continue
 
             movie_count = await db["movie"].count_documents({})
