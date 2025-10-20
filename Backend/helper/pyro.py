@@ -155,7 +155,6 @@ commands = [
     BotCommand("set", "🎬 Manually add IMDb metadata"),
     BotCommand("log", "📄 Send the log file"),
     BotCommand("restart", "♻️ Restart the bot"),
-    BotCommand("clear_all_data", "🗑️ Delete all data"),
 ]
 
 
