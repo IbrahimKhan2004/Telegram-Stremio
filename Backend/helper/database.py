@@ -1,4 +1,3 @@
-import asyncio
 from asyncio import create_task
 from bson import ObjectId
 import motor.motor_asyncio
@@ -852,54 +851,3 @@ class Database:
                     "dataSize": db_stats.get("dataSize", 0)
                 })
         return stats
-
-    async def get_all_media_files(self) -> List[str]:
-        all_file_ids = []
-        total_storage_dbs = len(self.dbs) - 1
-
-        for i in range(1, total_storage_dbs + 1):
-            db_key = f"storage_{i}"
-            db = self.dbs.get(db_key)
-            if not db:
-                continue
-
-            # Process movies
-            movie_cursor = db["movie"].find({})
-            async for doc in movie_cursor:
-                if "telegram" in doc:
-                    for quality in doc["telegram"]:
-                        if file_id := quality.get("id"):
-                            all_file_ids.append(file_id)
-
-            # Process tv shows
-            tv_cursor = db["tv"].find({})
-            async for doc in tv_cursor:
-                if doc and "seasons" in doc:
-                    for season in doc["seasons"]:
-                        for episode in season.get("episodes", []):
-                            for quality in episode.get("telegram", []):
-                                if file_id := quality.get("id"):
-                                    all_file_ids.append(file_id)
-        return all_file_ids
-
-    async def drop_all_media_collections(self) -> int:
-        total_deleted_count = 0
-        total_storage_dbs = len(self.dbs) - 1
-
-        for i in range(1, total_storage_dbs + 1):
-            db_key = f"storage_{i}"
-            db = self.dbs.get(db_key)
-            if not db:
-                continue
-
-            movie_count = await db["movie"].count_documents({})
-            tv_count = await db["tv"].count_documents({})
-            total_deleted_count += movie_count + tv_count
-
-            if movie_count > 0:
-                await db.drop_collection("movie")
-            if tv_count > 0:
-                await db.drop_collection("tv")
-            LOGGER.info(f"Dropped movie and tv collections from {db_key}.")
-
-        return total_deleted_count
